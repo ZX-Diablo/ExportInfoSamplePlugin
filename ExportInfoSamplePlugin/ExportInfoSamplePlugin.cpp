@@ -5,12 +5,6 @@ ClassDesc2* GetExportInfoSamplePluginDesc ()
 	return ExportInfoSamplePluginClassDesc::GetInstance();
 }
 
-ExportInfoSamplePlugin* ExportInfoSamplePlugin::GetInstance ()
-{
-	static ExportInfoSamplePlugin plugin;
-	return &plugin;
-}
-
 int ExportInfoSamplePlugin::ExtCount ()
 {
 	return 1;
@@ -62,7 +56,29 @@ void ExportInfoSamplePlugin::ShowAbout (HWND hWnd)
 
 int ExportInfoSamplePlugin::DoExport (const MCHAR* name, ExpInterface* ei, Interface* i, BOOL suppressPrompts, DWORD options)
 {
-	return 0;
+	if (this->file_ptr)
+	{
+		return IMPEXP_FAIL;
+	}
+
+	errno_t err = _tfopen_s(&this->file_ptr, name, _T("w"));
+
+	if (err != 0)
+	{
+		return IMPEXP_FAIL;
+	}
+
+	Interval range = i->GetAnimRange();
+
+	_ftprintf_s(this->file_ptr, _T("%s %.1f\n"), _T(PLUGIN_CLASS_NAME), PLUGIN_VERSION / 100.f);
+	_ftprintf_s(this->file_ptr, _T("%s\n"), static_cast<const wchar_t*>(i->GetCurFileName()));
+	_ftprintf_s(this->file_ptr, _T("Frames %d - %d\n"), range.Start() / GetTicksPerFrame(), range.End() / GetTicksPerFrame());
+	_ftprintf_s(this->file_ptr, _T("Rate %d - %d\n"), GetFrameRate(), GetTicksPerFrame());
+
+	fclose(this->file_ptr);
+	this->file_ptr = nullptr;
+
+	return IMPEXP_SUCCESS;
 }
 
 ExportInfoSamplePluginClassDesc* ExportInfoSamplePluginClassDesc::GetInstance ()
@@ -78,7 +94,7 @@ int ExportInfoSamplePluginClassDesc::IsPublic ()
 
 void* ExportInfoSamplePluginClassDesc::Create (BOOL loading)
 {
-	return ExportInfoSamplePlugin::GetInstance();
+	return new ExportInfoSamplePlugin;
 }
 
 const MCHAR* ExportInfoSamplePluginClassDesc::ClassName ()

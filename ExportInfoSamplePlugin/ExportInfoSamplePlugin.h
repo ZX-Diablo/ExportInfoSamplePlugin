@@ -20,9 +20,6 @@ extern TCHAR* GetString (int id);
 class ExportInfoSamplePlugin : public SceneExport
 {
 public:
-	static ExportInfoSamplePlugin* GetInstance ();
-
-public:
 	int ExtCount () override;
 	const MCHAR* Ext (int n) override;
 
@@ -39,6 +36,9 @@ public:
 	void ShowAbout (HWND hWnd) override;
 
 	int DoExport (const MCHAR* name, ExpInterface* ei, Interface* i, BOOL suppressPrompts = FALSE, DWORD options = 0) override;
+
+private:
+	FILE* file_ptr = nullptr;
 };
 
 class ExportInfoSamplePluginClassDesc : public ClassDesc2
