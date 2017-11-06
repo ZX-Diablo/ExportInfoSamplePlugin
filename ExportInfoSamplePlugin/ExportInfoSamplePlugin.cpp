@@ -2,7 +2,7 @@
 
 ClassDesc2* GetExportInfoSamplePluginDesc ()
 {
-	return nullptr;
+	return ExportInfoSamplePluginClassDesc::GetInstance();
 }
 
 ExportInfoSamplePlugin* ExportInfoSamplePlugin::GetInstance ()
@@ -63,6 +63,12 @@ void ExportInfoSamplePlugin::ShowAbout (HWND hWnd)
 int ExportInfoSamplePlugin::DoExport (const MCHAR* name, ExpInterface* ei, Interface* i, BOOL suppressPrompts, DWORD options)
 {
 	return 0;
+}
+
+ExportInfoSamplePluginClassDesc* ExportInfoSamplePluginClassDesc::GetInstance ()
+{
+	static ExportInfoSamplePluginClassDesc plugin_classdesc;
+	return &plugin_classdesc;
 }
 
 int ExportInfoSamplePluginClassDesc::IsPublic ()

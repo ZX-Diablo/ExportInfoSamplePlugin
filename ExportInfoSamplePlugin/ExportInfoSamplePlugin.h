@@ -44,6 +44,9 @@ public:
 class ExportInfoSamplePluginClassDesc : public ClassDesc2
 {
 public:
+	static ExportInfoSamplePluginClassDesc* GetInstance ();
+
+public:
 	int IsPublic () override;
 	void* Create (BOOL loading = FALSE) override;
 	const MCHAR* ClassName () override;
