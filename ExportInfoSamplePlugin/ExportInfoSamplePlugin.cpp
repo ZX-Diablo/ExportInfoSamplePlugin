@@ -5,6 +5,34 @@ ClassDesc2* GetExportInfoSamplePluginDesc ()
 	return ExportInfoSamplePluginClassDesc::GetInstance();
 }
 
+static INT_PTR CALLBACK SettingsDlgProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+		case WM_COMMAND:
+		{
+			switch (LOWORD(wParam))
+			{
+				case IDOK:
+				{
+					EndDialog(hWnd, TRUE);
+					break;
+				}
+
+				case IDCANCEL:
+				{
+					EndDialog(hWnd, FALSE);
+					break;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return TRUE;
+}
+
 int ExportInfoSamplePlugin::ExtCount ()
 {
 	return 1;
@@ -59,6 +87,14 @@ int ExportInfoSamplePlugin::DoExport (const MCHAR* name, ExpInterface* ei, Inter
 	if (this->file_ptr)
 	{
 		return IMPEXP_FAIL;
+	}
+
+	if (!suppressPrompts)
+	{
+		if (!DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_SETTINGS), i->GetMAXHWnd(), SettingsDlgProc, 0))
+		{
+			return IMPEXP_SUCCESS;
+		}
 	}
 
 	errno_t err = _tfopen_s(&this->file_ptr, name, _T("w"));
