@@ -11,6 +11,10 @@ Just a demo SceneExport plugin with empty settings dialog. Writes to a txt-file 
 3ds Max 2016 SDK required.
 Setup SDK include and library paths and build.
 
+## Installation
+
+Copy ExportInfoSamplePlugin.dle file from build directory to 3ds Max plugins directory.
+
 ## Usage
 
 To test run export from 3ds Max menu and choose "Export plugin (\*.TXT)" type.
